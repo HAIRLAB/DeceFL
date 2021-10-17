@@ -24,7 +24,7 @@ class DatasetSplit(Dataset):
 
 
 class LocalUpdate(object):
-    def __init__(self, args, dataset, idxs): #, logger
+    def __init__(self, args, dataset, idxs):  # , logger
         self.args = args
         # self.logger = logger
         self.trainloader, self.testloader = self.train_val_test(
@@ -43,13 +43,13 @@ class LocalUpdate(object):
         and user indexes.
         """
         # split indexes for train, validation, and test (80, 20)
-        idxs_train = idxs[:] #int(0.8*len(idxs))
+        idxs_train = idxs[:]  # int(0.8*len(idxs))
         idxs_test = idxs[:]
 
         trainloader = DataLoader(DatasetSplit(dataset, idxs_train),
                                  batch_size=self.args.local_bs, shuffle=True)
         testloader = DataLoader(DatasetSplit(dataset, idxs_test),
-                                batch_size=int(len(idxs_test)/10), shuffle=False)
+                                batch_size=int(len(idxs_test) / 10), shuffle=False)
         return trainloader, testloader
 
     def update_weights(self, model, global_round):
@@ -59,13 +59,13 @@ class LocalUpdate(object):
 
         # Set optimizer for the local updates
         if self.args.optimizer == 'sgd':
-            optimizer = torch.optim.SGD(model.parameters(), lr=self.args.lr,weight_decay=1e-4) #momentum=0.5
+            optimizer = torch.optim.SGD(model.parameters(), lr=self.args.lr, weight_decay=1e-4)  # momentum=0.5
         elif self.args.optimizer == 'adam':
-            optimizer = torch.optim.Adam(model.parameters(), lr=self.args.lr,weight_decay=1e-4)
-        
-        step_size = 5
-        StepLR_optimizer = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.2)
-        
+            optimizer = torch.optim.Adam(model.parameters(), lr=self.args.lr, weight_decay=1e-4)
+
+        # step_size = 5
+        # StepLR_optimizer = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.2)
+
         for iter in range(self.args.local_ep):
             batch_loss = 0.0
             for batch_idx, (images, labels) in enumerate(self.trainloader):
@@ -80,25 +80,25 @@ class LocalUpdate(object):
                 # loss = self.criterion(log_probs, labels.float().view(-1, 1))
                 loss.backward()
 
-                #for name,param in model.named_parameters():
+                # for name,param in model.named_parameters():
                 #    param.grad = grad_avg.grad
                 nn.utils.clip_grad_norm_(model.parameters(), max_norm=10, norm_type=2)
-                
+
                 optimizer.step()
 
                 if self.args.verbose and (batch_idx % 5 == 0):
                     print('| Global Round : {} | Local Epoch : {} | [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                        global_round, iter+1, (batch_idx+1) * len(images),
+                        global_round, iter + 1, (batch_idx + 1) * len(images),
                         len(self.trainloader.dataset),
-                        100. * (batch_idx+1) / len(self.trainloader), loss.item()))
+                                      100. * (batch_idx + 1) / len(self.trainloader), loss.item()))
                 # self.logger.add_scalar('loss', loss.item())
                 batch_loss += loss.item()
                 # batch_loss.append(loss.item())
-            epoch_loss.append(batch_loss/(batch_idx + 1))
-            
-            StepLR_optimizer.step()
-        
-        return model, epoch_loss[-1] #sum(epoch_loss) / len(epoch_loss)
+            epoch_loss.append(batch_loss / (batch_idx + 1))
+
+            # StepLR_optimizer.step()
+
+        return model, epoch_loss[-1]  # sum(epoch_loss) / len(epoch_loss)
 
     def inference(self, model):
         """ Returns the inference accuracy and loss.
@@ -127,9 +127,9 @@ class LocalUpdate(object):
 
             loss += batch_loss.item()
             total += len(labels)
-        
+
         loss = loss / (batch_idx + 1)
-        accuracy = correct/total
+        accuracy = correct / total
         return accuracy, loss
 
 
@@ -170,7 +170,7 @@ def test_inference(args, model, test_dataset):
         loss += batch_loss.item()
 
         total += len(labels)
-    
+
     loss = loss / (batch_idx + 1)
-    accuracy = correct/total
+    accuracy = correct / total
     return accuracy, loss

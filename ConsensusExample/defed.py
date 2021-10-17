@@ -76,7 +76,7 @@ if __name__ == '__main__':
         test_accuracy_each.append([])
         model_state.append([])     # 记录每个round后的state_dict
 
-    with open(f'./save/node{args.num_users}/objects/defed_ini_state_p{args.p}.pkl', 'wb') as f:
+    with open(f'../save/node{args.num_users}/objects/defed_ini_state_p{args.p}.pkl', 'wb') as f:
         pickle.dump(model_ini, f)
 
     # Set the model to train and send it to device.
@@ -126,7 +126,6 @@ if __name__ == '__main__':
         
         global_model.train()
 
-
         for ind,idx in enumerate(idxs_users):
             local_model = LocalUpdate(args=args, dataset=train_dataset,
                                       idxs=user_groups[idx]) #, logger=logger
@@ -146,12 +145,6 @@ if __name__ == '__main__':
             local_weights_grad.append(copy.deepcopy(grad_i))
             train_loss[ind].append(copy.deepcopy(loss))
 
-            # # recording test_acc and test_loss of each node
-            # test_acc_i, test_loss_i = test_inference(args, copy.deepcopy(model_i_update), test_dataset)
-            # test_accuracy_each[idx].append(test_acc_i)
-            # test_loss_each[idx].append(test_loss_i)
-        
-
         for ind in range(len(idxs_users)):
             # update global weights
             w_weights = W[:,ind]
@@ -161,74 +154,19 @@ if __name__ == '__main__':
             global_model_i[ind].load_state_dict(global_weights)
 
         local_weights_grad_old = local_weights_grad
-        
-        # update global weights
-        #w_weights = np.ones(len(idxs_users))/len(idxs_users)
-        #global_weights = average_weights(local_weights,w_weights)
 
-        # update global weights
-        #global_model.load_state_dict(global_weights)
-        #loss_avg = sum(local_losses) / len(local_losses)
-        #train_loss.append(loss_avg)
-
-        # Calculate avg training accuracy over all users at every epoch
-        
         # update global weights
         global_weights_mean = average_weights(local_weights)
         
         # update global weights
         global_model.load_state_dict(global_weights_mean)
         global_model.eval()
-        
-        
-        # for ind in range(len(idxs_users)):
-        #     list_acc, list_loss = [], []
-        #     global_model_i[ind].eval()
-        #     for c in range(args.num_users):
-        #         local_model = LocalUpdate(args=args, dataset=train_dataset,
-        #                                   idxs=user_groups[c]) #, logger=logger
-        #         acc, loss = local_model.inference(model=global_model_i[ind])
-        #         list_acc.append(acc)
-        #         list_loss.append(loss)
-        #
-        #     train_accuracy[ind].append(sum(list_acc)/len(list_acc))
-        #
-        #     # print global training loss after every 'i' rounds
-        #     if (epoch+1) % print_every == 0:
-        #         print(f' \nAvg Training Stats after {epoch+1} global rounds:')
-        #         print(f'Training Loss : {np.mean(np.array(train_loss[ind]))}')
-        #         print('Train Accuracy: {:.2f}% \n'.format(100*train_accuracy[ind][-1]))
-        
-        # list_mean_acc, list_mean_loss = [], []
-        # for c in range(args.num_users):
-        #     local_model = LocalUpdate(args=args, dataset=train_dataset,
-        #                               idxs=user_groups[c]) #, logger=logger
-        #     acc_mean, loss_mean = local_model.inference(model=global_model)
-        #     list_mean_acc.append(acc_mean)
-        #     list_mean_loss.append(loss_mean)
-        #
-        # train_mean_accuracy.append(sum(list_mean_acc)/len(list_mean_acc))
-        # train_mean_loss.append(sum(list_mean_loss)/len(list_mean_loss))
-        #
+
         for ind in range(len(idxs_users)):
-        #     # Test inference after completion of training
-        #     test_acc_i, test_loss_i = test_inference(args, global_model_i[ind], test_dataset)
-        #     test_accuracy[ind].append(copy.deepcopy(test_acc_i))
-        #     test_loss[ind].append(copy.deepcopy(test_loss_i))
-        #
             model_state[ind].append(copy.deepcopy(global_model_i[ind].state_dict()))  # 记录每个round后的state
-        #
-        #     print(f' \n Local Model:{ind} Results after {args.epochs} global rounds of training:')
-        #     print("|---- Avg Train Accuracy: {:.2f}%".format(100*train_accuracy[ind][-1]))
-        #     print("|---- Test Accuracy: {:.2f}%".format(100*test_acc_i))
-        #
-        # test_acc_global[epoch], test_loss_global[epoch] = test_inference(args, global_model, test_dataset)
-        # print("|---- Test Accuracy Global: {:.2f}%".format(100 * test_acc_global[epoch]))
 
-
-    with open(f'./save/node{args.num_users}/objects/defed_final_state_p{args.p}.pkl', 'wb') as f:
+    with open(f'../save/node{args.num_users}/objects/defed_final_state_p{args.p}.pkl', 'wb') as f:
         pickle.dump(model_state, f)
-
 
     print('\n Total Run Time: {0:0.4f}'.format(time.time()-start_time))
 

@@ -38,6 +38,7 @@ if __name__ == '__main__':
 
     # set random seed
     if args.seed:
+        random.seed(args.seed)
         np.random.seed(args.seed)
         torch.manual_seed(args.seed)  # sets the seed for generating random numbers.   　　
         torch.cuda.manual_seed(args.seed)  # Sets the seed for generating random numbers for the current GPU.
@@ -133,29 +134,33 @@ if __name__ == '__main__':
     Num_model_sel_1 = Num_model - 2
     user_sel_1 = random.sample(range(len(idxs_users)), Num_model_sel_1)
     user_else_1 = set(range(len(idxs_users))) - set(user_sel_1)
+    print('user_sel_1:',user_sel_1)
 
     Num_model_sel_2 = Num_model
     user_sel_2 = random.sample(range(len(idxs_users)), Num_model_sel_2)
     user_else_2 = set(range(len(idxs_users))) - set(user_sel_2)
-
+    print('user_sel_2:',user_sel_2)
 
     Num_model_sel_3 = Num_model - 2
     user_sel_3 = random.sample(range(len(idxs_users)), Num_model_sel_3)
     user_else_3 = set(range(len(idxs_users))) - set(user_sel_3)
-
+    print('user_sel_3:',user_sel_3)
+    
     lr_start = args.lr
 
     local_weights_grad_old = []
     test_acc_global, test_loss_global = {}, {}
     for epoch in tqdm(range(args.epochs)):
-        local_weights = []
-        local_weights_new = []
+        
+        local_weights = [[] for _ in range(len(idxs_users))]
+        local_weights_new = [[] for _ in range(len(idxs_users))]
+
 
         print(f'\n | Global Training Round : {epoch + 1} |\n')
 
         for i in range(Num_model):
             global_model_i[i].train()
-        
+
         global_model.train()
         
         # args.lr = lr_start*(0.95**epoch)
@@ -168,10 +173,14 @@ if __name__ == '__main__':
 
             # .state_dict(), model.grad.state_dict()
             w_update = model_i_update.state_dict()
-            w_i = global_model_i[ind].state_dict()
+            w_i = global_model_i[idx].state_dict()
 
-            local_weights.append(copy.deepcopy(w_i))           # 保存本地更新完前的模型
-            local_weights_new.append(copy.deepcopy(w_update))  # 保存本地更新完后的模型
+            #local_weights.append(copy.deepcopy(w_i))           # 保存本地更新完前的模型
+            #local_weights_new.append(copy.deepcopy(w_update))  # 保存本地更新完后的模型
+            
+            local_weights[idx] = copy.deepcopy(w_i)
+            local_weights_new[idx] = copy.deepcopy(w_update)
+            
             # train_loss[ind].append(copy.deepcopy(loss))
 
         if args.varying == 1:    # 设置时变，每轮只连接一半的节点
@@ -252,7 +261,7 @@ if __name__ == '__main__':
             # print global training loss after every 'i' rounds
             if (epoch+1) % print_every == 0:
                 print(f' \nAvg Training Stats after {epoch+1} global rounds:')
-                print(f'Training Loss : {np.mean(np.array(train_loss[ind]))}')
+                print(f'Training Loss : {np.mean(np.array(train_loss[idx]))}')
                 print('Train Accuracy: {:.2f}% \n'.format(100*train_accuracy[idx][-1]))
 
         list_mean_acc, list_mean_loss = [], []

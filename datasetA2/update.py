@@ -62,8 +62,11 @@ class LocalUpdate(object):
             optimizer = torch.optim.SGD(model.parameters(), lr=self.args.lr,weight_decay=1e-4) #momentum=0.5
         elif self.args.optimizer == 'adam':
             optimizer = torch.optim.Adam(model.parameters(), lr=self.args.lr,weight_decay=1e-4)
-        
-        step_size = 5
+
+        if self.args.local_ep == 30:
+            step_size = 20
+        else:
+            step_size = 5
         StepLR_optimizer = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=0.2)
         
         for iter in range(self.args.local_ep):

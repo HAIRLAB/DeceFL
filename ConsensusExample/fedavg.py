@@ -91,7 +91,7 @@ if __name__ == '__main__':
         raise Exception('Error: unrecognized model')
 
     # global_model.apply(weigth_init)
-    with open(f'./save/node{args.num_users}/objects/fedavg_ini_state.pkl', 'wb') as f:
+    with open(f'../save/node{args.num_users}/objects/fedavg_ini_state.pkl', 'wb') as f:
         pickle.dump(copy.deepcopy(global_model.state_dict()), f)
 
     # Set the model to train and send it to device.
@@ -140,56 +140,16 @@ if __name__ == '__main__':
             w = model_i.state_dict()
             local_weights.append(copy.deepcopy(w))
             local_losses.append(copy.deepcopy(loss))
-            
-            # acc_t, loss_t = local_model.inference(model=copy.deepcopy(global_model))
-            #
-            # # recording test_acc and test_loss of each node
-            # test_acc_i, test_loss_i = test_inference(args, copy.deepcopy(model_i), test_dataset)
-            # test_accuracy_each[idx].append(test_acc_i)
-            # test_loss_each[idx].append(test_loss_i)
-
-
 
         # update global weights
-        #w_weights = np.ones(len(idxs_users))/len(idxs_users)
         global_weights = average_weights(local_weights)
 
         # update global weights
         global_model.load_state_dict(global_weights)
 
-        # loss_avg = sum(local_losses) / len(local_losses)
-        # train_loss.append(loss_avg)
-
-    #     # Calculate avg training accuracy over all users at every epoch
-    #     list_acc, list_loss = [], []
-    #     global_model.eval()
-    #     for c in range(args.num_users):
-    #         local_model = LocalUpdate(args=args, dataset=train_dataset,
-    #                                   idxs=user_groups[c]) #, logger=logger
-    #         acc, loss = local_model.inference(model=global_model)
-    #         list_acc.append(acc)
-    #         list_loss.append(loss)
-    #     train_accuracy.append(sum(list_acc)/len(list_acc))
-    #
-    #     # print global training loss after every 'i' rounds
-    #     if (epoch+1) % print_every == 0:
-    #         print(f' \nAvg Training Stats after {epoch+1} global rounds:')
-    #         print(f'Training Loss : {np.mean(np.array(train_loss))}')
-    #         print('Train Accuracy: {:.2f}% \n'.format(100*train_accuracy[-1]))
-    #
-    #     test_acc[epoch], test_loss[epoch] = test_inference(args, global_model, test_dataset)
-    #     print("|---- Test Accuracy: {:.2f}%".format(100 * test_acc[epoch]))
-    #
         model_state.append(copy.deepcopy(global_model.state_dict()))
-    #
-    # Test inference after completion of training
-    # test_acc, test_loss = test_inference(args, global_model, test_dataset)
-    #
-    # print(f' \n Results after {args.epochs} global rounds of training:')
-    # print("|---- Avg Train Accuracy: {:.2f}%".format(100*train_accuracy[-1]))
-    # print("|---- Test Accuracy: {:.2f}%".format(100*test_acc))
 
-    with open(f'./save/node{args.num_users}/objects/fedavg_final_state.pkl', 'wb') as f:
+    with open(f'../save/node{args.num_users}/objects/fedavg_final_state.pkl', 'wb') as f:
         pickle.dump(model_state, f)
 
     print('\n Total Run Time: {0:0.4f}'.format(time.time()-start_time))

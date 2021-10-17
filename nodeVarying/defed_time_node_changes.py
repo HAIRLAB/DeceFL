@@ -35,6 +35,7 @@ if __name__ == '__main__':
 
     # set random seed
     if args.seed:
+        random.seed(args.seed)
         np.random.seed(args.seed)
         torch.manual_seed(args.seed)  # sets the seed for generating random numbers.   　　
         torch.cuda.manual_seed(args.seed)  # Sets the seed for generating random numbers for the current GPU.
@@ -162,7 +163,7 @@ if __name__ == '__main__':
         print('W1:\n', W1)
     user_sel_1 = random.sample(range(len(idxs_users)), Num_model_sel_1)
     user_else_1 = set(range(len(idxs_users))) - set(user_sel_1)
-
+    print('user_sel_1:',user_sel_1)
 
     Num_model_sel_2 = Num_model
     if args.method == 'er':
@@ -170,14 +171,15 @@ if __name__ == '__main__':
         print('W2:\n', W2)
     user_sel_2 = random.sample(range(len(idxs_users)), Num_model_sel_2)
     user_else_2 = set(range(len(idxs_users))) - set(user_sel_2)
-
+    print('user_sel_2:',user_sel_2)
 
     Num_model_sel_3 = Num_model - 2
     if args.method == 'er':
-        W3 = erdos_renyi(Num_model_sel_3, p)
+        W3 = erdos_renyi(Num_model_sel_3, p)    
         print('W3:\n', W3)
     user_sel_3 = random.sample(range(len(idxs_users)), Num_model_sel_3)
     user_else_3 = set(range(len(idxs_users))) - set(user_sel_3)
+    print('user_sel_3:',user_sel_3)
     
     lr_start = args.lr
 
@@ -217,7 +219,7 @@ if __name__ == '__main__':
             #.state_dict(), model.grad.state_dict()
             w_update = model_i_update.state_dict()
             w_i = global_model_i[idx].state_dict()
-            
+
             # local_weights_new.append(copy.deepcopy(w_update))    # 保存本地更新完后的模型
 
             grad_i = copy.deepcopy(w_update)
@@ -242,15 +244,15 @@ if __name__ == '__main__':
                 
                 for ind, idx in enumerate(user_sel):
                     w_weights = W1[:, ind]  
-                    mu = 1 #*(0.95**epoch)
+                    mu = 0.1 #*(0.95**epoch)
                     global_weights = average_weights_new(local_weights_sel, local_weights_grad_sel, w_weights, ind, mu)
                     global_model_i[idx].load_state_dict(global_weights)
                 for idx in user_else:  # 未连接的节点也按步长更新
-                    mu = 1 #*(0.95**epoch)
+                    mu = 0.1 #*(0.95**epoch)
                     global_weights = unsel_weights_new(local_weights[idx], local_weights_grad[idx], mu)
                     global_model_i[idx].load_state_dict(global_weights)
 
-            if epoch > args.epochs//3 and epoch <= args.epochs//3*2:
+            elif epoch > args.epochs//3 and epoch <= args.epochs//3*2:
                 print('Step 2:\n')
                 user_sel = user_sel_2
                 user_else = user_else_2
@@ -261,11 +263,11 @@ if __name__ == '__main__':
                 
                 for ind, idx in enumerate(user_sel):
                     w_weights = W2[:, ind]
-                    mu = 1 #*(0.95**epoch)
+                    mu = 0.1 #*(0.95**epoch)
                     global_weights = average_weights_new(local_weights_sel, local_weights_grad_sel, w_weights, ind, mu)
                     global_model_i[idx].load_state_dict(global_weights)
                 for idx in user_else:  # 未连接的节点也按步长更新
-                    mu = 1 #*(0.95**epoch)
+                    mu = 0.1 #*(0.95**epoch)
                     global_weights = unsel_weights_new(local_weights[idx], local_weights_grad[idx], mu)
                     global_model_i[idx].load_state_dict(global_weights)
 
@@ -280,11 +282,11 @@ if __name__ == '__main__':
                 
                 for ind, idx in enumerate(user_sel):
                     w_weights = W3[:, ind]
-                    mu = 1 #*(0.95**epoch)
+                    mu = 0.1 #*(0.95**epoch)
                     global_weights = average_weights_new(local_weights_sel, local_weights_grad_sel, w_weights, ind, mu)
                     global_model_i[idx].load_state_dict(global_weights)
                 for idx in user_else:  # 未连接的节点也按步长更新
-                    mu = 1 #*(0.95**epoch)
+                    mu = 0.1 #*(0.95**epoch)
                     global_weights = unsel_weights_new(local_weights[idx], local_weights_grad[idx], mu)
                     global_model_i[idx].load_state_dict(global_weights)
         
@@ -292,7 +294,7 @@ if __name__ == '__main__':
             for ind,idx in enumerate(idxs_users):
                 # update global weights
                 w_weights = W[:,ind]
-                mu = 1 #*(0.95**epoch)
+                mu = 0.1 #*(0.95**epoch)
                 global_weights = average_weights_new(local_weights,local_weights_grad,w_weights,ind,mu)
                 # global_weights = average_weights_w(local_weights_new, w_weights)
                 # update global weights
@@ -333,7 +335,7 @@ if __name__ == '__main__':
             # print global training loss after every 'i' rounds
             if (epoch+1) % print_every == 0:
                 print(f' \nAvg Training Stats after {epoch+1} global rounds:')
-                print(f'Training Loss : {np.mean(np.array(train_loss[ind]))}')
+                print(f'Training Loss : {np.mean(np.array(train_loss[idx]))}')
                 print('Train Accuracy: {:.2f}% \n'.format(100*train_accuracy[idx][-1]))
         
         list_mean_acc, list_mean_loss = [], []

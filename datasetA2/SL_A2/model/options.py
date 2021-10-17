@@ -7,29 +7,42 @@ import argparse
 def args_parser():
     parser = argparse.ArgumentParser()
 
-    # federated arguments (Notation for the arguments followed from paper)
-    parser.add_argument('--epochs', type=int, default=100,
+    # need to change
+    parser.add_argument('--epochs', type=int, default=1500,
                         help="number of rounds of training")
-    parser.add_argument('--num_users', type=int, default=10,
+    parser.add_argument('--num_users', type=int, default=8,
                         help="number of users: K")
-    parser.add_argument('--frac', type=float, default=1,
-                        help='the fraction of clients: C')
+
+    parser.add_argument('--model', type=str, default='logistic', help='model name')
+
+    parser.add_argument('--dataset', type=str, default='sl_a', help="name \
+                        of dataset")
+    parser.add_argument('--iid', type=int, default=1,
+                        help='Default set to IID. Set to 0 for non-IID.')
+    parser.add_argument('--unequal', type=int, default=0,
+                        help='whether to use unequal data splits for  \
+                        non-i.i.d setting (use 0 for equal splits)')
     parser.add_argument('--local_ep', type=int, default=10,
                         help="the number of local epochs: E")
+    parser.add_argument('--lr', type=float, default=0.01,
+                        help='learning rate')
+
+
+    # federated arguments (Notation for the arguments followed from paper)
+    parser.add_argument('--frac', type=float, default=1,
+                        help='the fraction of clients: C')
+
     parser.add_argument('--local_bs', type=int, default=64,
                         help="local batch size: B")
-    parser.add_argument('--lr', type=float, default=0.1,
-                        help='learning rate')
     parser.add_argument('--momentum', type=float, default=0.5,
                         help='SGD momentum (default: 0.5)')
     parser.add_argument('--method', type=str, default='er',
                         help='er,diag')
-    parser.add_argument('--p', type=float, default=0.5,
+    parser.add_argument('--p', type=float, default=0.9,
                         help='p (default: 0.1)')
 
 
     # model arguments
-    parser.add_argument('--model', type=str, default='logistic', help='model name')
     parser.add_argument('--kernel_num', type=int, default=9,
                         help='number of each kind of kernel')
     parser.add_argument('--kernel_sizes', type=str, default='3,4,5',
@@ -47,24 +60,16 @@ def args_parser():
                         strided convolutions")
 
     # other arguments
-    parser.add_argument('--dataset', type=str, default='sl_a', help="name \
-                        of dataset")
-    parser.add_argument('--num_classes', type=int, default=1, help="number \
+
+    parser.add_argument('--num_classes', type=int, default=2, help="number \
                         of classes")
     parser.add_argument('--gpu', default=0, help="To use cuda, set \
                         to a specific GPU ID. Default set to use CPU.")
     parser.add_argument('--optimizer', type=str, default='sgd', help="type \
                         of optimizer")
-    parser.add_argument('--iid', type=int, default=1,
-                        help='Default set to IID. Set to 0 for non-IID.')
-    parser.add_argument('--unequal', type=int, default=0,
-                        help='whether to use unequal data splits for  \
-                        non-i.i.d setting (use 0 for equal splits)')
     parser.add_argument('--stopping_rounds', type=int, default=10,
                         help='rounds of early stopping')
-    parser.add_argument('--verbose', type=int, default=1, help='verbose')
+    parser.add_argument('--verbose', type=int, default=0, help='verbose')
     parser.add_argument('--seed', type=int, default=1, help='random seed')
-
-    parser.add_argument('--varying', type=int, default=1, help='time-varying')
     args = parser.parse_args()
     return args
