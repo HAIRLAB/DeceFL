@@ -2,11 +2,7 @@
 
 ## Introduction
 
-本部分实验是实现对比Fedavg和DeceFL在增删节点情况下的实验情况，实验对比数
-据集为A2数据集，基础实验的节点变化为 6-8-6，网络在初始情况下基于选择的6
-个节点进行训练迭代，在迭代一定基础上加入新加入的两个节点，在8节点的情况
-下继续训练，在进一步训练一段时长后，再随机删去其中的两个节点，进行后续训
-练。
+This experiment benchmarks the performance of DeceFL using graphs that delete or add nodes over time, using FedAvg as the reference performance. It uses dataset A2 in both IID and Non-IID setups. The chosen graph starts with 6 nodes, then 8 nodes by adding two such that the whole graph keeps connected, and finally 6 nodes by randomly deleting two without violating graph connected-ness. 
 
 ## Dependencies
 
@@ -56,26 +52,31 @@ Folder structure:
 
 File description:
 
-- `options.py` 中设置了代码中默认的参数系数
-- `sampling.py` 中定义了文件的样本采样方式
-- `models.py` 中定义了所有的模型网络
-- `update.py` 中定义了局部更新函数
-- `utils.py` 中定义了数据分配方式和随机链接矩阵生成等函数
-- `fedavg_time_varing_node_changes.py` 代表着基于Fedavg实现的增删节点实验主代码
-- `defed_time_varing_node_changes.py` 代表着基于DeceFL实现的增删节点的实验主代码
+- `options.py`: sets default arguments and coefficients
+- `sampling.py`: defines sampling methods for data preparation
+- `models.py`: defines graphs used in the federated learning 中定义了所有的模型网络
+- `update.py`: defines the local update functions
+- `utils.py`: includes data preparation strategies, and functions on generating random adjacency matrices.
+- `fedavg_time_varing_node_changes.py`: the main script to apply FedAvg in this experiment
+- `defed_time_varing_node_changes.py`: the main script to apply DeceFL in this experiment
 
 
 ### Experiment Setup
 
-每个节点单个round跑了10epochs，batch-size设置为64，优化方式选择为SGD，设
-定的SGD的权重衰减（weight-decay）系数为1e-4（实现L2正则化），初始学习率
-为0.01，每5 个epoch乘一次学习率衰减系数为0.2，外部迭代的模型聚合时候
-(DeceFL:梯度更新系数为0.1，Fedavg没有更新梯度），round数目根据实验数据的
-收敛情况，从而设置不同的数值。
+Every node runs 10 epochs in each round, with batch-size 64. It uses the
+SGD optimizer, with weight decay coefficient $10^{-4}$ for the
+realization of $l_2$ regularization. The initial learning rate (for deep
+learning framework) is 0.01, which is later decayed by multiplying 0.2
+every 5 epochs. It uses *sigmoid* as the activation function in the
+output layer for binary classification (dataset A2). At aggregation, the
+gradient update coefficient for DeceFL is $0.1$ (FedAvg does not use
+this variable). The total number of running rounds is selected by
+visualization effects of convergence for all methods in comparison.
+
 
 ## DeceFL
 
-通过以下 bash 命令可以运行不同设置下的 **DeceFL** 模型：
+Run the experiment of DeceFL using logistic regression on IID or Non-IID dataset by the following bash commands.
 
 ### IID Setup
 
@@ -91,7 +92,8 @@ CUDA_VISIBLE_DEVICES=1 nohup python fedavg_time_varing_node_changes.py --dataset
 
 ## FedAvg
 
-通过以下 bash 命令可以运行不同设置下的 **Fedavg** 模型：
+Run the experiment of FedAvg using logistic regression on IID or Non-IID dataset by
+the following bash commands.
 
 ### IID Setup
 
@@ -107,18 +109,21 @@ CUDA_VISIBLE_DEVICES=1 nohup python fedavg_time_varing_node_changes.py --dataset
 
 Options:
 
-- `model`: 控制模型类型参数，参数值为：{dnn, logistic}，分别选模型为 dnn 和 logistic
-- `num_users`: 控制节点数量，参数值任意
-- `num_classes`: 告诉模型类别数量，参数值由数据类别数量所觉得
-- `iid,unequal`: 一起设置数据分别类型参数，当iid为1、unequal为0时候为无
-  放回的随机抽取，当iid为0、unequal为1时候为按照给定的非均衡数据样本分布
-  抽取。
-- `p`: 设置随机连通图的参数，p值越大，连通度越高
-- `local_ep`: 设置局部模型的迭代epoch数
-- `lr`: 设置局部模型的初始学习率
-- `varying`: 参数为设置为时变的参数
+- `model`：choosing training model, it can be `dnn` and `logistic`.
+- `num_users`: the number of graph nodes/clients, e.g., 4, 8, 16 in use.
+- `num_classes`: the number of classes for classification problems; dataset A2 is a binary classification problem.
+- `iid,unequal`: together control how data is split and prepared as local datasets. When `iid == 1, unequal == 0` , perform random sampling without put samples back to the set; when `iid == 1, unequal == 1`, use the designed Non-IID setup, which specifies the sample size and the unbalanced ratio between positive and negative samples.
+- `p`: the connectivity probability of a graph used in DeceFL; our experiment uses 0.9, 0.7, 0.5, 0.3.
+- `local_ep`：the number of training epochs between two adjacent aggregation.
+- `lr`: initial learning rate in deep learning frameworks for local models.
+- `varying`: controls whether it is a time-varying experiment.
 
 
 ## Figure Plotting
 
-在运行完相关实验并将数据存储到对应文件夹后，Loss 和 Accuracy 的曲线图通可过运行 `total_plot_new.py` 文件画出来。
+After running these experiments, results will placed in the corresponding folders. The figures on `loss` and `accuracy` can be obtained by `total_plot_new.py`.
+
+
+Last modified on 20 Oct 2021
+
+By oracleyue
