@@ -1,12 +1,20 @@
-# A2数据集SL相关实验
+# SL Algorithm for Experiments on Datast A2
 
-## 基本框架
-请参照SL论文中提供的github链接 https://github.com/HewlettPackard/swarm-learning 进行部署
+## Basic library
 
-## 需要改动的内容
-### 1
-将 my_sl 文件夹拷贝到./swarm-learning/example/目录下。
-my_sl 文件夹的基本结构如下：
+Refer to the github repo https://github.com/HewlettPackard/swarm-learning to deploy and use SL [1].
+
+## Updates
+
+There is a few updates required for the SL library in order to perform
+our experiments. Listed as follows.
+
+### Item 1
+
+Copy `my_sl` folder to `./swarm-learning/example/`.
+
+Folder structure of `my_sl`:
+```
 ├─my_sl
 │  ├─app-data
 │  │   ├─A
@@ -15,11 +23,18 @@ my_sl 文件夹的基本结构如下：
 │  │
 │  ├─bin
 │  └─model
+```
 
-其中 app-data目录下为实验数据，需自行添加；bin目录下为我们修改后的可执行脚本；model目录下为机器学习算法，可对options中的参数进行修改以完成不同设置下的实验。
+Descriptions:
 
-### 2
-将 https://github.com/HewlettPackard/swarm-learning/tree/master/examples/mnist-keras 中步骤1中的指令替换为
+- Folder `app-data` keeps data for experiments, which should be added. 
+- Folder `bin` contains executable scripts, which has been updated. 
+- Folder `model` includes machine learning algorithms, which perform multiple experiments by setting arguments in `options`.
+
+### Item 2
+
+Replace the commands in Step 1 in https://github.com/HewlettPackard/swarm-learning/tree/master/examples/mnist-keras with
+
 ```bash
 export APLS_IP=<License Host Server IP>
 export EXAMPLE=my_sl
@@ -28,10 +43,13 @@ export WS_DIR_PREFIX=A2_logistic_iid_node8-
 
 ./my_sl/bin/init-workspace -e $EXAMPLE -i $APLS_IP -d $WORKSPACE_DIR -w $WS_DIR_PREFIX -n 8
 ```
-其中 -n 表示节点个数
 
-### 3
-将 https://github.com/HewlettPackard/swarm-learning/tree/master/examples/mnist-keras 中步骤2中的指令替换为
+where `-n` specifies the number of nodes.
+
+### Item 3
+
+Replace the commands in Step 2 in https://github.com/HewlettPackard/swarm-learning/tree/master/examples/mnist-keras with
+
 ```bash
 export APLS_IP=<License Host Server IP>
 export EXAMPLE=my_sl
@@ -41,4 +59,14 @@ export TRAINING_NODE=node1
 
 ../swarm-learning/bin/run-sl --name $TRAINING_NODE-sl --network $EXAMPLE-net --host-ip $TRAINING_NODE-sl --sn-ip node-sn --apls-ip $APLS_IP --serverAddress node-spire -genJoinToken --data-dir $WORKSPACE_DIR/$EXAMPLE/app-data --model-dir $WORKSPACE_DIR/$WS_DIR_PREFIX$EXAMPLE/$TRAINING_NODE/model --model-program demo1.py --sl-platform PYT
 ```
-其中 WS_DIR_PREFIX 为工作目录名称，可自行修改。
+
+where `WS_DIR_PREFIX` is the name of working directory, which can be modified by users.
+
+## References
+
+[1] Warnat-Herresthal, S. et al. *Swarm learning for decentralized and
+confidential clinical machine learning*. Nature 594, 265–270 (2021). URL
+https://doi.org/10.1038/s41586-021-03583-3.
+
+
+*Last modified on 20 Oct 2021*
