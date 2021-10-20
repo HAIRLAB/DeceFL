@@ -77,8 +77,6 @@ The total number of running rounds is selected by visualization effects
 of convergence for all methods in comparison.
 
 
-
-
 ## DeceFL
 
 ### Logistic Regression
@@ -161,4 +159,4 @@ To run experiments on Non-IID dataset, one just needs to replace the
 options `--iid 1 --unequal 0` with `--iid 0 --unequal 1`.
 
 
-*Last modified on 19 Oct 2021, 17:24:23*
+*Last modified on 19 Oct 2021*

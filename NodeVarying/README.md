@@ -124,6 +124,4 @@ Options:
 After running these experiments, results will placed in the corresponding folders. The figures on `loss` and `accuracy` can be obtained by `total_plot_new.py`.
 
 
-Last modified on 20 Oct 2021
-
-By oracleyue
+*Last modified on 20 Oct 2021*

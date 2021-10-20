@@ -25,11 +25,11 @@ python dataset_cwru.py
 > :bulb: **Tips**: Use option `cats` to control the number of classes.
 
 
-## FedAvg 训练
+## FedAvg
 
 ### IID Setup
 
-通过以下 bash 命令可以运行 IID 情况下的 FedAvg 模型：
+To run FedAvg on IID dataset, use the bash command:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 nohup python fedavg.py --dataset cwru --gpu 1 --iid 1 --unequal 0 --num_channels 1 --model dnn --epochs 300 --local_ep 30 --lr 0.1 --step_size 20 --local_bs 64 --num_users 4 --p 0.9 --num_classes 4 --seed 1 > ../result/node4/fedavg_cwru_dnn_iid_r300_seed1.txt 2>&1 &
@@ -37,14 +37,14 @@ CUDA_VISIBLE_DEVICES=0 nohup python fedavg.py --dataset cwru --gpu 1 --iid 1 --u
 
 Options:
 
-- `model`: 可选模型为 `dnn` 和 `logistic`
-- `num_users`: 控制节点数量
-- `num_classes`: 告诉模型类别数量
+- `model`: chooses `dnn` or `logistic`
+- `num_users`: - `num_users`: the number of graph nodes/clients
+- `num_classes`: the number of classes for classification problems; CWRU has 4-way and 10-way classification problems
 
 
 ### Non-IID Setup
 
-通过以下 bash 命令可以运行 NonIID 情况下的 FedAvg 模型：
+To run FedAvg on Non-IID dataset, use the bash command:
 
 ```bash
 CUDA_VISIBLE_DEVICES=4 nohup python fedavg.py --dataset cwru --gpu 1 --iid 0 --unequal 1 --num_channels 1 --model dnn --epochs 300 --local_ep 30 --lr 0.1 --step_size 20 --local_bs 64 --num_users 4 --p 0.9 --num_classes 4 --seed 1 > ../result/node4/fedavg_cwru_dnn_noniid_r300_seed1.txt 2>&1 &
@@ -55,7 +55,7 @@ CUDA_VISIBLE_DEVICES=4 nohup python fedavg.py --dataset cwru --gpu 1 --iid 0 --u
 
 ### IID Setup
 
-通过以下 bash 命令可以运行 IID 情况下的 DeceFL 模型
+To run DeceFL on IID dataset, use the bash command:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 nohup python defed.py --dataset cwru --gpu 1 --iid 1 --unequal 0 --num_channels 1 --model dnn --epochs 300 --local_ep 30 --lr 0.1 --step_size 20 --local_bs 64 --num_users 4 --p 0.9 --num_classes 4 --seed 1 > ../result/node4/defed_cwru_dnn_iid_r300_p0.9_seed1.txt 2>&1 &
@@ -63,12 +63,13 @@ CUDA_VISIBLE_DEVICES=0 nohup python defed.py --dataset cwru --gpu 1 --iid 1 --un
 
 Options:
 
-- `p`: 控制节点联通矩阵的稀疏程度
+- `p`: the connectivity probability of a graph used in DeceFL; our experiment uses 0.9, 0.7, 0.5, 0.3
+- others, refer to previous *Options* description
 
 
 ### Non-IID Setup
 
-通过以下 bash 命令可以运行 NonIID 情况下的 DeceFL 模型
+To run DeceFL on Non-IID dataset, use the bash command:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 nohup python defed.py --dataset cwru --gpu 1 --iid 0 --unequal 1 --num_channels 1 --model dnn --epochs 300 --local_ep 30 --lr 0.1 --step_size 20 --local_bs 64 --num_users 4 --p 0.9 --num_classes 4 --seed 1 > ../result/node4/defed_cwru_dnn_noniid_r300_p0.9_seed1.txt 2>&1 &
@@ -92,6 +93,9 @@ CUDA_VISIBLE_DEVICES=0 nohup python train_alone.py --dataset cwru --gpu 1 --iid 
 
 ## Figure Plotting
 
-Loss 和 Accuracy 的曲线图通过 `total_plot_new.py` 文件画出来。
+Run `total_plot_new.py` to plot performance figures of *loss* (train) and *accuracy* (train/test).
 
-数据分布和节点单独训练准确率通过 `cwru_plot.py` 文件画出来。
+Run `cwru_plot.py` to plot accessory figures, like data distribution figures, accuracy plot of independent training at each local node.
+
+
+*Last modified on 20 Oct 2021*

@@ -2,21 +2,25 @@
 
 
 
-## requirement:
+## Dependencies
 
--torch == 1.9.0
--numpy == 1.19.2
--sklearn == 0.23.2
--pandas == 1.1.3
--tqdm == 4.61.1
--matplotlib == 3.3.2
+Python libraries:
 
-- 运行环境为windows 10
+- `torch == 1.9.0`
+- `numpy == 1.19.2`
+- `sklearn == 0.23.2`
+- `pandas == 1.1.3`
+- `tqdm == 4.61.1`
+- `matplotlib == 3.3.2`
+
+Our experiment runs on Windows 10.
 
 
+## File Organization
 
-## Folder structure:
+Folder structure:
 
+```
 ├─data
 │  ├─A
 │  └─CWRU
@@ -41,33 +45,30 @@
    ├─sampling.py
    ├─update.py
    └─ utils.py 
+```
+
+File description:
+
+- `defed.py`: the main codes that realize DeceFL
+- `fedavg.py`: the main codes that realize FedAvg
+- `models.py`: defines all graph models
+- `options.py`: specific the default options and parameter values
+- `sampling.py`: defines the sampling methods for data preparation
+- `update.py`: defines the local update functions
+- `utils.py`: includes data preparation strategies, and functions on generating random adjacency matrices
+- `model_compare_loss.py`: script to visualize the performance of training loss
+- `model_compare_new.py`: script to visualize the convergence of model parameters
 
 
+## Experiment Setup
 
-## Code:
-
-options.py 中设置了代码中默认的参数系数
-sampling.py 中定义了文件的样本采样方式
-models.py 中定义了所有的模型网络
-update.py 中定义了局部更新函数
-utils.py 中定义了数据分配方式和随机链接矩阵生成等函数
-model_compare_loss.py 为框架loss的可视化代码
-model_compare_new.py 为模型参数收敛情况的可视化代码
-fedavg.py 代表着Fedavg实验主代码
-defed.py 代表着DeceFL实验主代码
+Every node has only one sample $(1,1)$, that is $x = 1, y = 1$. It uses a linear model,
+and in implementation chooses `local_epoch=1`, `lr=0.01`, `epochs=1000`, SGD optimizer, no weight decay, and MSE loss.
 
 
+To do training in DeceFL, use `defed.py`.
 
-## 实验设置:
-每个节点只包含一个样本（1，1），即x=1，y=1；采用linear模型；local_epoch=1；lr=0.01；epochs=1000；优化方式选择为SGD,不设置权重衰减；损失采用MSE损失。
-
-
+To do training in FedAvg, use `fedavg.py`.
 
 
-## DeceFL 训练
-直接运行defed.py即可
-
-
-
-## FedAvg 训练
-直接运行fedavg.py即可
+*Last modified on 20 Oct 2021*
