@@ -1,4 +1,4 @@
-# CWRU 凯斯西储数据集实验
+# CWRU Dataset for Decentralized Fault Diagnosis
 
 ## Dependencies
 

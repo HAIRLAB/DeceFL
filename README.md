@@ -22,7 +22,7 @@ This repository comprises codes that reproduce experiments in Ye, et al (2021), 
 
 Hardware: GPU that supports Pytorch
 
-OS: Linux
+OS: Linux, Windows 10
 
 Python packages:
 
@@ -39,4 +39,4 @@ Python packages:
 
 ## Reference
 
-[1] Ye Yuan, et al. DeceFL: A Principled Decentralized Federated Learning Framework. 2021.
+[1] Ye Yuan, et al. *DeceFL: A Principled Decentralized Federated Learning Framework*. Submitted to Nature Machine Intelligence, 2021.

@@ -1,5 +1,7 @@
 # Experiments on Dataset A2
 
+The experiments include benchmarks of DeceFL vs. FedAvg [1], SL [2]; and time-varying experiments on DeceFL with edge-varying graphs.
+
 ## Dependencies
 
 OS: Linux
@@ -158,5 +160,13 @@ CUDA_VISIBLE_DEVICES=0 nohup python fedavg.py --dataset sl_a --gpu 1 --iid 1 --u
 To run experiments on Non-IID dataset, one just needs to replace the
 options `--iid 1 --unequal 0` with `--iid 0 --unequal 1`.
 
+
+## Reference
+
+[1] Konecny, J. et al. *Federated learning: Strategies for improving communication efficiency*. arXiv preprint arXiv:1610.05492 (2016).
+
+[2] Warnat-Herresthal, S. et al. *Swarm learning for decentralized and
+confidential clinical machine learning*. Nature 594, 265–270 (2021). URL
+https://doi.org/10.1038/s41586-021-03583-3.
 
 *Last modified on 19 Oct 2021*
