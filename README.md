@@ -39,4 +39,4 @@ Python packages:
 
 ## Reference
 
-[1] Ye Yuan, et al. *DeceFL: A Principled Decentralized Federated Learning Framework*. Submitted to Nature Machine Intelligence, 2021.
+[1] Ye Yuan, et al. *DeceFL: A Principled Decentralized Federated Learning Framework*. Submitted for peer review, 2021.
