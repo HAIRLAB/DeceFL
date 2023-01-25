@@ -199,11 +199,11 @@ if __name__ == '__main__':
             local_weights_grad_sel = [local_weights_grad[i] for i in user_sel]
             for ind, idx in enumerate(user_sel):
                 w_weights = W[:, ind]
-                mu = 0.1
+                mu = 1
                 global_weights = average_weights_new(local_weights_sel, local_weights_grad_sel, w_weights, ind, mu)
                 global_model_i[idx].load_state_dict(global_weights)
             for idx in user_else:  # 未连接的节点也按步长更新
-                mu = 0.1
+                mu = 1
                 global_weights = unsel_weights_new(local_weights[idx], local_weights_grad[idx], mu)
                 global_model_i[idx].load_state_dict(global_weights)
 
@@ -211,7 +211,7 @@ if __name__ == '__main__':
             for ind in range(len(idxs_users)):
                 # update global weights
                 w_weights = W[:,ind]
-                mu = 0.1
+                mu = 1
                 global_weights = average_weights_new(local_weights, local_weights_grad, w_weights, ind, mu)
                 # global_weights = average_weights_w(local_weights_new, w_weights)
                 # update global weights
