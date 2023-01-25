@@ -244,11 +244,11 @@ if __name__ == '__main__':
                 
                 for ind, idx in enumerate(user_sel):
                     w_weights = W1[:, ind]  
-                    mu = 0.1 #*(0.95**epoch)
+                    mu = 1 #*(0.95**epoch)
                     global_weights = average_weights_new(local_weights_sel, local_weights_grad_sel, w_weights, ind, mu)
                     global_model_i[idx].load_state_dict(global_weights)
                 for idx in user_else:  # 未连接的节点也按步长更新
-                    mu = 0.1 #*(0.95**epoch)
+                    mu = 1 #*(0.95**epoch)
                     global_weights = unsel_weights_new(local_weights[idx], local_weights_grad[idx], mu)
                     global_model_i[idx].load_state_dict(global_weights)
 
@@ -263,11 +263,11 @@ if __name__ == '__main__':
                 
                 for ind, idx in enumerate(user_sel):
                     w_weights = W2[:, ind]
-                    mu = 0.1 #*(0.95**epoch)
+                    mu = 1 #*(0.95**epoch)
                     global_weights = average_weights_new(local_weights_sel, local_weights_grad_sel, w_weights, ind, mu)
                     global_model_i[idx].load_state_dict(global_weights)
                 for idx in user_else:  # 未连接的节点也按步长更新
-                    mu = 0.1 #*(0.95**epoch)
+                    mu = 1 #*(0.95**epoch)
                     global_weights = unsel_weights_new(local_weights[idx], local_weights_grad[idx], mu)
                     global_model_i[idx].load_state_dict(global_weights)
 
@@ -282,11 +282,11 @@ if __name__ == '__main__':
                 
                 for ind, idx in enumerate(user_sel):
                     w_weights = W3[:, ind]
-                    mu = 0.1 #*(0.95**epoch)
+                    mu = 1 #*(0.95**epoch)
                     global_weights = average_weights_new(local_weights_sel, local_weights_grad_sel, w_weights, ind, mu)
                     global_model_i[idx].load_state_dict(global_weights)
                 for idx in user_else:  # 未连接的节点也按步长更新
-                    mu = 0.1 #*(0.95**epoch)
+                    mu = 1 #*(0.95**epoch)
                     global_weights = unsel_weights_new(local_weights[idx], local_weights_grad[idx], mu)
                     global_model_i[idx].load_state_dict(global_weights)
         
@@ -294,7 +294,7 @@ if __name__ == '__main__':
             for ind,idx in enumerate(idxs_users):
                 # update global weights
                 w_weights = W[:,ind]
-                mu = 0.1 #*(0.95**epoch)
+                mu = 1 #*(0.95**epoch)
                 global_weights = average_weights_new(local_weights,local_weights_grad,w_weights,ind,mu)
                 # global_weights = average_weights_w(local_weights_new, w_weights)
                 # update global weights
