@@ -148,7 +148,7 @@ if __name__ == '__main__':
         for ind in range(len(idxs_users)):
             # update global weights
             w_weights = W[:,ind]
-            mu = 0.1
+            mu = 1
             global_weights = average_weights_new(local_weights,local_weights_grad,w_weights,ind,mu)
             # update global weights
             global_model_i[ind].load_state_dict(global_weights)
